@@ -50,7 +50,7 @@ class WorldScene(SceneBase):
 	def processInput(self, events, pressed_keys):
 		for event in events:
 			if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_RETURN:
+					if event.key == pygame.K_ESCAPE:
 						self.switchToScene(TitleScene())
 		self.character.move(pygame.key.get_pressed())
 	def update(self):
@@ -81,6 +81,8 @@ class BattleScene(SceneBase):
 					self.menu.changeOption(1)
 				if event.key == pygame.K_UP:
 					self.menu.changeOption(-1)
+				if event.key == pygame.K_RETURN:
+					print("Option " + str(self.menu.getButtonText()))
 	def enemies(self, enemies):
 		self.enemies = enemies
 	def update(self):

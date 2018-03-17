@@ -16,14 +16,15 @@ class Menu:
 	def update(self, buttons = None):
 		if buttons == None:
 			buttons = self.buttons
-		(surf,rect) = buttons[self.option]
+		button = self.getButton(self.option)
+		(surf,rect) = button
 		self.cursor.update(rect)
 	def render(self, screen, buttons = None):
 		if buttons == None:
 			buttons = self.buttons
 		self.update()
 		screen.blit(self.background, (self.posx,self.posy))
-		for (buttonSurf, buttonRect) in buttons:
+		for ((buttonSurf, buttonRect), text) in buttons:
 			screen.blit(buttonSurf, buttonRect)
 		self.cursor.render(screen)
 	def changeOption(self, offset):
@@ -36,23 +37,33 @@ class Menu:
 		self.option = option
 	def getTextSize(self):
 		return self.text_size
-	def appendButton(self, button):
-		self.buttons.append(button)
+	def appendButton(self, text, posx, posy, colour=(255, 255, 255), size = 25, position = TextPosition.left, font = F_DROID_SANS):
+		self.buttons.append((writeText(text, posx, posy, colour, size, position, font), text))
 		self.num_options += 1
+	def getButtonText(self, index = -1):
+		if index != -1:
+			opt = index
+		else:
+			opt = self.option
+		(button, text) = self.buttons[opt]
+		return text
+	def getButton(self, index):
+		(button, text) = self.buttons[index]
+		return button
 	def getNumOptions(self):
 		return self.num_options
 class ScreenMenu(Menu):
 	def __init__(self):
 		Menu.__init__(self, posx = 0, posy = 0, width = WIDTH, height = HEIGHT, cursor_size = CURSOR_SIZE, background_colour = C_PURPLE, text_size = TEXT_LG)
-		self.appendButton(writeText("New", posx = WIDTH_HALF, posy = HEIGHT_HALF-MENU_OFFSET, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.centered, font = F_SWORD_OF_MANA))
-		self.appendButton(writeText("Continue", posx = WIDTH_HALF, posy = HEIGHT_HALF, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.centered, font = F_SWORD_OF_MANA))
-		self.appendButton(writeText("Exit", posx = WIDTH_HALF, posy = HEIGHT_HALF + MENU_OFFSET, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.centered, font = F_SWORD_OF_MANA))
+		self.appendButton("New", posx = WIDTH_HALF, posy = HEIGHT_HALF-MENU_OFFSET, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.centered, font = F_SWORD_OF_MANA)
+		self.appendButton("Continue", posx = WIDTH_HALF, posy = HEIGHT_HALF, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.centered, font = F_SWORD_OF_MANA)
+		self.appendButton("Exit", posx = WIDTH_HALF, posy = HEIGHT_HALF + MENU_OFFSET, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.centered, font = F_SWORD_OF_MANA)
 class BattleMenu(Menu):
 	def __init__(self, players, enemies, turn = 0):
 		Menu.__init__(self, posx = MENU_BATTLE_SCREEN_X, posy = MENU_BATTLE_SCREEN_Y, width = MENU_BATTLE_SCREEN_WIDTH, height = MENU_BATTLE_SCREEN_HEIGHT, cursor_size = CURSOR_BATTLE_SIZE, background_colour = C_AQUAMARINE, buttons = [], text_size = 25)
 		self.players = players
 		self.enemies = enemies
 		self.turn = turn
-		self.appendButton(writeText("Atack", posx = WIDTH - MENU_BATTLE_SCREEN_X - MENU_BATTLE_OFFSET_WIDTH, posy = MENU_BATTLE_SCREEN_Y + MENU_BATTLE_OFFSET_HEIGHT, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.right, font = F_ARCADE_CLASSIC))
-		self.appendButton(writeText("Skills", posx = WIDTH - MENU_BATTLE_SCREEN_X - MENU_BATTLE_OFFSET_WIDTH, posy = MENU_BATTLE_SCREEN_Y + 2 * MENU_BATTLE_OFFSET_HEIGHT, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.right, font = F_ARCADE_CLASSIC))
-		self.appendButton(writeText("Items", posx = WIDTH - MENU_BATTLE_SCREEN_X - MENU_BATTLE_OFFSET_WIDTH, posy = MENU_BATTLE_SCREEN_Y + 3 * MENU_BATTLE_OFFSET_HEIGHT, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.right, font = F_ARCADE_CLASSIC))
+		self.appendButton("Atack", posx = WIDTH - MENU_BATTLE_SCREEN_X - MENU_BATTLE_OFFSET_WIDTH, posy = MENU_BATTLE_SCREEN_Y + MENU_BATTLE_OFFSET_HEIGHT, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.right, font = F_ARCADE_CLASSIC)
+		self.appendButton("Skills", posx = WIDTH - MENU_BATTLE_SCREEN_X - MENU_BATTLE_OFFSET_WIDTH, posy = MENU_BATTLE_SCREEN_Y + 2 * MENU_BATTLE_OFFSET_HEIGHT, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.right, font = F_ARCADE_CLASSIC)
+		self.appendButton("Items", posx = WIDTH - MENU_BATTLE_SCREEN_X - MENU_BATTLE_OFFSET_WIDTH, posy = MENU_BATTLE_SCREEN_Y + 3 * MENU_BATTLE_OFFSET_HEIGHT, colour = C_WHITE, size = self.getTextSize(), position = TextPosition.right, font = F_ARCADE_CLASSIC)
